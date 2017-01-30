@@ -1,5 +1,6 @@
 import PuntoEntrenamiento as PE
 import matplotlib.pyplot as plt
+from pylab import plot,show, norm
 
 plt.style.use('ggplot')
 
@@ -12,7 +13,6 @@ W0 = PE.Input( PE.getRandom( MIN_VAL, MAX_VAL ) )
 
 puntosEntrenamiento = [ PE.PuntoEntrenamiento((-1.,-1.),0.) ]
 
-
 puntosEntrenamiento.append( PE.PuntoEntrenamiento((-2.,2.) ,0 ) )
 puntosEntrenamiento.append( PE.PuntoEntrenamiento((-3.,3.),0 ) )
 puntosEntrenamiento.append( PE.PuntoEntrenamiento((-4.,1.),0 ) )
@@ -20,11 +20,11 @@ puntosEntrenamiento.append( PE.PuntoEntrenamiento((-2.,0.),0 ) )
 puntosEntrenamiento.append( PE.PuntoEntrenamiento((-2.,2.),0 ) )
 
 puntosEntrenamiento.append( PE.PuntoEntrenamiento((2.,2.),1 ) )
-puntosEntrenamiento.append( PE.PuntoEntrenamiento((4.,2.),1 ) )
-puntosEntrenamiento.append( PE.PuntoEntrenamiento((5.,2.),1 ) )
+puntosEntrenamiento.append( PE.PuntoEntrenamiento((3.,2.),1 ) )
+puntosEntrenamiento.append( PE.PuntoEntrenamiento((1.5,2.),1 ) )
 puntosEntrenamiento.append( PE.PuntoEntrenamiento((1.,2.),1 ) )
 puntosEntrenamiento.append( PE.PuntoEntrenamiento((3.,2.),1 ) )
-puntosEntrenamiento.append( PE.PuntoEntrenamiento((4.,2.),1 ) )
+puntosEntrenamiento.append( PE.PuntoEntrenamiento((2.1,2.),1 ) )
 
 Entradas = ( PE.Input( PE.getRandom( MIN_VAL, MAX_VAL ) ),
 			 PE.Input( PE.getRandom( MIN_VAL, MAX_VAL ) ) )
@@ -39,7 +39,6 @@ def Training():
 
 		for punto in puntosEntrenamiento:
 			salida = None
-
 			suma = X0 * W0.getPeso()
 			for i, entrada in enumerate(Entradas):
 				suma += punto.getCoordenadas()[i] * entrada.getPeso()
@@ -48,7 +47,6 @@ def Training():
 				salida = 1
 			else:	
 				salida = C_ZERO
-
 
 			error = punto.getClase() - salida
 
@@ -71,22 +69,28 @@ def Training():
 
 		#plot( W0.getPeso(), Entradas )
 		print("Iteracion: " + str(iteracion))
+		plotTrain(puntosEntrenamiento,Entradas, W0.getPeso())
 		#raw_input()
 		pass
 
-def plot( b, entradas ):
-	print(entradas[0])
-	x = -b / entradas[0].getPeso()
-	y = -b / entradas[1].getPeso()
 
-	d = y
-	c = -y / x
+def plotTrain( puntos, entradas, bias):
+	for punto in puntos:
+		if punto.getClase() == C_ZERO:
+			plot(punto.getCoordenadas()[0],punto.getCoordenadas()[1],'ob')
+		else :
+			plot(punto.getCoordenadas()[0],punto.getCoordenadas()[1],'or')
+		
 
-	line_x_coords = array([0,x])
-	line_y_coords = c * line_x_coords + d
+	WeightArray = [entradas[0].getPeso(), entradas[1].getPeso()]
+	X = 5
 
-	plt.plot(line_x_coords,line_y_coords)
-	plt.show()
+	n = norm(WeightArray)
+	ww = WeightArray / n
+	ww1 = [ww[1], -ww[0]]
+	ww2 = [-ww[1], ww[0]]
+	plot([ww1[0]*X , ww2[0]*X],[ww1[1]*X , ww2[1]*X],'--b')
+	show()
 
 if __name__ == '__main__':
 	Training()

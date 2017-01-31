@@ -2,14 +2,15 @@
 
 # reference => http://glowingpython.blogspot.com/2011/10/perceptron.html
 
-from pylab import rand,plot,show,norm
+from pylab import rand,plot,show,norm, grid, ylim, xlim, grid, axvline, axhline
+import Grafica2 as grafica2
 
 RANGO = 0.5
 
 def generateData(n):
 	"""
 	generates a 2D linearly separable dataset with n samples, where the third element is the label
-	"""
+	
 	xb = ( rand( n ) * 2 - 1 ) / 2 - RANGO
 	yb = ( rand( n ) * 2 - 1 ) / 2 + RANGO
 	xr = ( rand( n ) * 2 - 1 ) / 2 + RANGO
@@ -20,7 +21,10 @@ def generateData(n):
 	for i in range(len(xb)):
 		inputs.append([xb[i],yb[i],1])
 		inputs.append([xr[i],yr[i],-1])
-	return inputs
+	return inputs"""
+
+	graf = grafica2.Grafica()
+	return graf.Puntos
 
 class Perceptron:
 	def __init__(self):
@@ -62,8 +66,11 @@ class Perceptron:
 					print 'iterations',iteration
 					learned = True
 
+
 	@staticmethod
 	def main():
+		grafica2.Grafica()
+		print('Japper')
 		trainset = generateData(30)
 		testset = generateData(20)
 		
@@ -78,6 +85,12 @@ class Perceptron:
 			else:
 				plot(x[0],x[1],'or')
 
+		ylim([-5,5])
+		xlim([-5,5])
+		grid()
+		axvline(0, color="black")
+		axhline(0, color="black")
+		X = 5
 
 		# plot of the separation line, which is orthogonal to w
 		n = norm(perceptron.w)
@@ -86,7 +99,7 @@ class Perceptron:
 		ww = perceptron.w/n
 		ww1 = [ww[1], -ww[0]]
 		ww2 = [-ww[1], ww[0]]
-		plot([ww1[0], ww2[0]],[ww1[1], ww2[1]],'--g')
+		plot([ww1[0]*X, ww2[0]*X],[ww1[1]*X, ww2[1]*X],'--g')
 		show()
 
 if __name__ == '__main__':

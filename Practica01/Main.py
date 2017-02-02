@@ -2,6 +2,7 @@ import PuntoEntrenamiento as PE
 import matplotlib.pyplot as plt
 from pylab import plot,show, norm, ylim, xlim, grid, axvline, axhline
 import Grafica as grafica
+import numpy as np
 
 #plt.style.use('ggplot')
 
@@ -103,11 +104,17 @@ def plotTrain( puntos, entradas, bias):
 	axvline(0, color="black")
 	axhline(0, color="black")
 
-	n = norm(WeightArray)
-	ww = WeightArray / n
-	ww1 = [ww[1], -ww[0]]
-	ww2 = [-ww[1], ww[0]]
-	plot([ww1[0]*X , ww2[0]*X],[ww1[1]*X , ww2[1]*X],'--b')
+	'''n = norm(WeightArray)
+				ww = WeightArray / n
+				ww1 = [ww[1], -ww[0]]
+				ww2 = [-ww[1], ww[0]]
+				plot([ww1[0]*X , ww2[0]*X],[ww1[1]*X , ww2[1]*X],'--b')'''
+
+	#Alternativa
+	x = np.array(range(-5,5))
+	y = eval( '(' + str(bias)+'/'+str(WeightArray[1]) + ')-((' +str(WeightArray[0])+'/'+str(WeightArray[1]) + ')*x)' )
+	plot(x,y,'--b')
+
 	show()
 
 if __name__ == '__main__':

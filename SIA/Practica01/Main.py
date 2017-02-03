@@ -1,7 +1,7 @@
 import PuntoEntrenamiento as PE
 import matplotlib.pyplot as plt
 from pylab import plot,show, norm, ylim, xlim, grid, axvline, axhline
-import Grafica as grafica
+#import Grafica as grafica
 import numpy as np
 
 #plt.style.use('ggplot')
@@ -13,30 +13,37 @@ LEARNING_RATE = 0.1
 X0 = -1
 W0 = PE.Input( PE.getRandom( MIN_VAL, MAX_VAL ) )
 
-graf = grafica.Grafica()
+'''graf = grafica.Grafica()
 plt.show()
 graf.seguirDibujando = False
 plt.show()
 '''
-puntosEntrenamiento = [ PE.PuntoEntrenamiento((-1.,-1.),0.) ]
 
-puntosEntrenamiento.append( PE.PuntoEntrenamiento((-2.,2.),0 ) )
-puntosEntrenamiento.append( PE.PuntoEntrenamiento((-3.,3.),0 ) )
-puntosEntrenamiento.append( PE.PuntoEntrenamiento((-4.,1.),0 ) )
-puntosEntrenamiento.append( PE.PuntoEntrenamiento((-2.,0.),0 ) )
-puntosEntrenamiento.append( PE.PuntoEntrenamiento((-2.,2.),0 ) )
+puntosEntrenamiento = [ PE.PuntoEntrenamiento((1,1,1),1) ]
 
-puntosEntrenamiento.append( PE.PuntoEntrenamiento((2.,2.1),1 ) )
-puntosEntrenamiento.append( PE.PuntoEntrenamiento((3.,3.2),1 ) )
-puntosEntrenamiento.append( PE.PuntoEntrenamiento((1.5,-1.2),1 ) )
-puntosEntrenamiento.append( PE.PuntoEntrenamiento((1.,0.7),1 ) )
+puntosEntrenamiento.append( PE.PuntoEntrenamiento((1,1,0),1 ) )
+puntosEntrenamiento.append( PE.PuntoEntrenamiento((1,1,0),1 ) )
+puntosEntrenamiento.append( PE.PuntoEntrenamiento((1,0,1),1 ) )
+puntosEntrenamiento.append( PE.PuntoEntrenamiento((1,0,0),1 ) )
+puntosEntrenamiento.append( PE.PuntoEntrenamiento((0,1,1),1 ) )
+
+puntosEntrenamiento.append( PE.PuntoEntrenamiento((0,1,0),0 ) )
+puntosEntrenamiento.append( PE.PuntoEntrenamiento((0,0,1),0 ) )
+puntosEntrenamiento.append( PE.PuntoEntrenamiento((0,0,0),0 ) )
+'''puntosEntrenamiento.append( PE.PuntoEntrenamiento((1.,0.7),1 ) )
 puntosEntrenamiento.append( PE.PuntoEntrenamiento((3.,0.9),1 ) )
-puntosEntrenamiento.append( PE.PuntoEntrenamiento((2.1,1.8),1 ) )'''
+puntosEntrenamiento.append( PE.PuntoEntrenamiento((2.1,1.8),1 ) )
+'''
+#puntosEntrenamiento = graf.Puntos
+Entradas = []
 
-puntosEntrenamiento = graf.Puntos
+for dimension in range(len(puntosEntrenamiento[C_ZERO].getCoordenadas())):
+	Entradas.append( PE.Input( PE.getRandom( MIN_VAL, MAX_VAL ) ) )
 
-Entradas = ( PE.Input( PE.getRandom( MIN_VAL, MAX_VAL ) ),
-			 PE.Input( PE.getRandom( MIN_VAL, MAX_VAL ) ) )
+#Entradas = ( PE.Input( PE.getRandom( MIN_VAL, MAX_VAL ) ),
+#			 PE.Input( PE.getRandom( MIN_VAL, MAX_VAL ) ) )
+
+
 
 
 def training():
@@ -64,12 +71,14 @@ def training():
 					entrada.setPeso( peso )
 
 		iteracion += 1
-		print("Peso: " + str(W0.getPeso()))
+		print('')
+		print("Bias: " + str(W0.getPeso()))
 		for entrada in Entradas:
 			print("Peso:" + str(entrada.getPeso()) )
 
 		#plot( W0.getPeso(), Entradas )
 		print("Iteracion: " + str(iteracion))
+		print('')
 		plotTrain(puntosEntrenamiento,Entradas, W0.getPeso())
 		#graf.redraw(puntosEntrenamiento,Entradas,W0.getPeso())
 

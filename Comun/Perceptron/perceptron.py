@@ -17,8 +17,9 @@ class Perceptron(object):
 		self.pesos = []
 		self.maxEpocas = maxEpocas
 		self.__X0 = -1
-		self.tieneError = True
+		self.tieneError = False
 		self.__lR = learningRate
+		self.iteraciones = 0
 
 		for i in range(dimensiones + 1):
 			self.pesos.append( Perceptron.getRandom( self.pesoMin, self.pesoMax ) )
@@ -29,16 +30,21 @@ class Perceptron(object):
 	def respuesta(self, punto):
 		suma = 0
 		for i,p in enumerate(punto):
-			if i == C_ZERO: 
-				suma += self.__X0 * self.getPesos()[i]
-			else:
-				suma += self.p.getCoordenada() * self.getPesos()[i]
+			if i == C_ZERO: entrada = C_M_UNO
+			else: entrada = self.p.getCoordenadas()[i - C_M_UNO]
+
+			suma += entrada * self.getPesos()[i]
 
 		if suma < C_ZERO: return C_ZERO
 		else: return C_UNO
 
-	def modificaPesos(self, error):
-		for i in range()
+	def modificaPesos(self, error, punto):
+		for i,w in enumerate(self.pesos):
+			if i == C_ZERO: entrada = C_M_UNO
+			else: entrada = self.p.getCoordenada()[i - C_M_UNO]
+		
+			w = entrada + self.__lR * ( error * punto.getCoordenadas()[i] )
+
 
 	def getPesos(self):
 		return self.pesos

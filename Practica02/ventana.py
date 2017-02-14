@@ -33,13 +33,15 @@ entradas = ( vE.Entrada( vE.getRandom( MIN_VAL, MAX_VAL ) ),
 class Ventana():
 	def __init__(self):
 		self.fig = plt.figure()
-		canvas = FigureCanvasTkAgg(self.fig, master=root)
-		self.grafica = Grafica(self.fig)
-		self.grafica.setCanvas(canvas)
+		canvas = FigureCanvasTkAgg( self.fig, master=root )
+		#canvas2 =  FigureCanvasTkAgg( self.fig, master = root )
+		self.grafica = Grafica( self.fig )
+		self.grafica.setCanvas( canvas )
 		self.ax = self.grafica.ax
 		canvas.show()
 		#canvas.get_tk_widget().pack(side=Tk.TOP, fill=Tk.BOTH, expand=1)
-		canvas.get_tk_widget().grid( row = 0, column = 0 , columnspan = 4)
+		canvas.get_tk_widget().grid( row = 0, column = 0, columnspan = 3 )
+		#canvas2.get_tk_widget().grid( row = 0, column = 5, columnspan = 4 )
 		#self.toolbar = NavigationToolbar2TkAgg(canvas, root)
 		#self.toolbar.update()
 		canvas._tkcanvas.grid( row=1, column = 0 )
@@ -90,9 +92,11 @@ class Ventana():
 				error = vector.getClase() - salida
 				errorTotal += (pow(error, 2)/2)
 				if ( error != C_ZERO ):
-					W0.setValor( W0.getValor() + float(lr.get()) * error * salida * (1 - vE.logsig(self.respuesta(vector))) * X0 )
+					#W0.setValor( W0.getValor() + float(lr.get()) * error * salida * (1 - vE.logsig(self.respuesta(vector))) * X0 )
+					W0.setValor( W0.getValor() + float(lr.get()) * error * salida * ( 1 - salida ) * X0 )
 					for i,entrada in enumerate(entradas):
-						peso = entrada.getValor() + float(lr.get()) * error * salida * (1 - vE.logsig(self.respuesta(vector))) * vector.getCoordenadas()[i]	   
+						#peso = entrada.getValor() + float(lr.get()) * error * salida * (1 - vE.logsig(self.respuesta(vector))) * vector.getCoordenadas()[i]
+						peso = entrada.getValor() + float(lr.get()) * error * salida * (1 - salida) * vector.getCoordenadas()[i]
 						entrada.setValor(peso)
 			self.lblEstado.config(text="Error total: "+str(errorTotal) + ' Epoca: ' + str(iteracion) )
 

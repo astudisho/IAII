@@ -12,8 +12,8 @@ root = Tk.Tk()
 root.wm_title("Adaline")
 
 C_ZERO = 0
-MIN_VAL = -1.5
-MAX_VAL = 1.5
+MIN_VAL = -0.5
+MAX_VAL = 0.5
 MAX_DECIMALES = 5
 maxEpocas = Tk.StringVar()
 maxEpocas.set('200')
@@ -93,10 +93,10 @@ class Ventana():
 				errorTotal += (pow(error, 2)/2)
 				if ( error != C_ZERO ):
 					#W0.setValor( W0.getValor() + float(lr.get()) * error * salida * (1 - vE.logsig(self.respuesta(vector))) * X0 )
-					W0.setValor( W0.getValor() + float(lr.get()) * (error * salida * ( 1 - salida ) * X0 ))
+					W0.setValor( W0.getValor() + float(lr.get()) * error * salida * ( 1 - salida ) * X0 )
 					for i,entrada in enumerate(entradas):
 						#peso = entrada.getValor() + float(lr.get()) * error * salida * (1 - vE.logsig(self.respuesta(vector))) * vector.getCoordenadas()[i]
-						peso = entrada.getValor() + float(lr.get()) * (error * salida * (1 - salida) * vector.getCoordenadas()[i])
+						peso = entrada.getValor() + float(lr.get()) * error * salida * (1 - salida) * vector.getCoordenadas()[i]
 						entrada.setValor(peso)
 			self.lblEstado.config(text="Error total: "+str(errorTotal) + ' Epoca: ' + str(iteracion) )
 

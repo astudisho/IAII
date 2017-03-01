@@ -2,8 +2,8 @@ import random as rnd
 
 class PuntoEntrenamiento(object):
 	"""docstring for PuntoWntrenamiento"""
-	def __init__(self,bias, Entradas, clase):
-		self.__Entradas = [bias] + Entradas
+	def __init__(self, Entradas, clase):
+		self.__Entradas = Entradas
 		self.__clase = clase
 		print(Entradas)
 		#self.__peso = peso

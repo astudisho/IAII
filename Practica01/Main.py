@@ -4,6 +4,10 @@ from pylab import plot,show, norm, ylim, xlim, grid, axvline, axhline
 import Grafica as grafica
 import numpy as np
 
+import random as rnd
+
+rnd.seed(1920)
+
 #plt.style.use('ggplot')
 
 MIN_VAL = -5
@@ -33,7 +37,28 @@ puntosEntrenamiento.append( PE.PuntoEntrenamiento((1.,0.7),1 ) )
 puntosEntrenamiento.append( PE.PuntoEntrenamiento((3.,0.9),1 ) )
 puntosEntrenamiento.append( PE.PuntoEntrenamiento((2.1,1.8),1 ) )'''
 
-puntosEntrenamiento = graf.Puntos
+setEntrenamiento = []
+
+setEntrenamiento.append(PE.PuntoEntrenamiento( [0,1], 1 ))
+setEntrenamiento.append(PE.PuntoEntrenamiento( [0,2], 1 ))
+setEntrenamiento.append(PE.PuntoEntrenamiento( [0,3], 1 ))
+setEntrenamiento.append(PE.PuntoEntrenamiento( [-1,1], 1 ))
+setEntrenamiento.append(PE.PuntoEntrenamiento( [-3,3], 1 ))
+setEntrenamiento.append(PE.PuntoEntrenamiento( [-2,1], 1 ))
+setEntrenamiento.append(PE.PuntoEntrenamiento( [-4,1], 1 ))
+setEntrenamiento.append(PE.PuntoEntrenamiento( [-1,2], 1 ))
+
+setEntrenamiento.append(PE.PuntoEntrenamiento( [2,1], 0 ))
+setEntrenamiento.append(PE.PuntoEntrenamiento( [1,2], 0 ))
+setEntrenamiento.append(PE.PuntoEntrenamiento( [2,3], 0 ))
+setEntrenamiento.append(PE.PuntoEntrenamiento( [3,1], 0 ))
+setEntrenamiento.append(PE.PuntoEntrenamiento( [3,3], 0 ))
+setEntrenamiento.append(PE.PuntoEntrenamiento( [2,1], 0 ))
+setEntrenamiento.append(PE.PuntoEntrenamiento( [4,1], 0 ))
+setEntrenamiento.append(PE.PuntoEntrenamiento( [1,2], 0 ))
+
+#puntosEntrenamiento = graf.Puntos
+puntosEntrenamiento = setEntrenamiento
 
 Entradas = ( PE.Input( PE.getRandom( MIN_VAL, MAX_VAL ) ),
 			 PE.Input( PE.getRandom( MIN_VAL, MAX_VAL ) ) )

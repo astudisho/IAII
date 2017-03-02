@@ -27,8 +27,8 @@ class Perceptron(object):
 		if ( error != C_ZERO ):
 			self.modificaPesos(error,punto)
 			self.tieneError = True
-
-		self.tieneError = False
+		else:
+			self.tieneError = False
 		return self.tieneError
 
 

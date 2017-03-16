@@ -1,4 +1,9 @@
-import tkinter as Tk
+import sys
+if sys.version_info.major >= 3:
+	import tkinter as Tk
+else:
+	import Tkinter as Tk
+
 import ventana
 
 def main():

@@ -4,7 +4,13 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
 import numpy as np
 import random
-import tkinter as Tk
+import sys
+
+if sys.version_info.major >= 3:
+	import tkinter as Tk
+else:
+	import Tkinter as Tk
+
 from grafica import Grafica
 import vectorEntrenamiento as vE
 
@@ -180,6 +186,9 @@ class Ventana():
 				
 			self.lblEstado.config(text="Error total: "+str(errorTotal) + ' Epoca: ' + str(iteracion) )
 			print("Error total: "+str(errorTotal) + ' Epoca: ' + str(iteracion))
+			
+			if iteracion % 5 == 0:	
+				self.fig.canvas.draw()
 
 			#Muestra los pesos
 			#textoPesos = 'Pesos: W0 = ' + str( round( W0.getValor(), MAX_DECIMALES ) ) + '\t'

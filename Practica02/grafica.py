@@ -34,10 +34,10 @@ class Grafica(object):
 				self.estaProbando = False
 			return
 
-		if event.button == 1L:
+		if event.button == 1:
 			self.vectoresEntrenamiento.append( vE.VectorEntrenamiento( ( event.xdata, event.ydata ),0 ) )
 			self.ax.plot(event.xdata, event.ydata, 'ob')
-		elif event.button == 3L:
+		elif event.button == 3:
 			self.vectoresEntrenamiento.append( vE.VectorEntrenamiento( ( event.xdata, event.ydata ),1 ) )
 			self.ax.plot(event.xdata, event.ydata, 'or')
 		self.figure.canvas.draw()

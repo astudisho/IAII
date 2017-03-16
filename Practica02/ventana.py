@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
 import numpy as np
 import random
-import Tkinter as Tk
+import tkinter as Tk
 from grafica import Grafica
 import vectorEntrenamiento as vE
 

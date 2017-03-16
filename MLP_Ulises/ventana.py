@@ -137,9 +137,18 @@ class Ventana():
 		llegoLimEpocas = False
 		iteracion = 0
 
-		
-		
+		self.fig2 = plt.figure()
+		self.ax2 = self.fig2.add_subplot(111)
+		self.ax.set_title('Error')
+		self.ax2.set_xlim([0,int(maxEpocas.get())])
+		self.ax2.set_ylim([0,4])
+		self.ax2.grid()
+		self.canvas2 = FigureCanvasTkAgg( self.fig2, master=root )
+		self.canvas2.show()
 
+		self.canvas2.get_tk_widget().grid( row = 0, column = 5, columnspan = 4 )
+		self.canvas2._tkcanvas.grid( row=1, column = 5 )
+		
 		while (errorTotal > errorMax):
 			errorTotal = 0
 			for vector in self.grafica.vectoresEntrenamiento:
@@ -291,8 +300,9 @@ class Ventana():
 		self.fig.canvas.draw()
 
 	def plotError(self, epoca, error):
-		pass
-		#self.ax2.plot(epoca,error, 'og')
+		self.ax2.plot(epoca,error, 'og')
+		if epoca % 5 == 0:
+			self.canvas2.draw()
 		#self.fig2.draw()
 		#self.ax2.draw()
 		#help(self.ax2.draw)

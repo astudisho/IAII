@@ -17,6 +17,10 @@ import vectorEntrenamiento as vE
 root = Tk.Tk()
 root.wm_title("MLP BackProp")
 
+
+MAX_PLOT = 5.
+MIN_PLOT = -5.
+
 C_ZERO = 0
 MIN_VAL = -1.5
 MAX_VAL = 1.5
@@ -39,15 +43,19 @@ neuronas_capa2 = Tk.IntVar()
 neuronas_capa2.set(8)
 
 class Ventana():
-	def __init__(self):
+	def __init__(self):	
+
 		self.fig = plt.figure()
 		canvas = FigureCanvasTkAgg( self.fig, master=root )
+
 		self.grafica = Grafica( self.fig )
 		self.grafica.setCanvas( canvas )
 		self.ax = self.grafica.ax
+
 		canvas.show()
 		canvas.get_tk_widget().grid( row = 0, column = 0, columnspan = 4 )
 		canvas._tkcanvas.grid( row=1, column = 0 )
+
 		
 		self.lblLr = Tk.Label(master=root, text="Learning rate: ")
 		self.lblLr.grid( row = 2, column = 0 )
@@ -89,6 +97,9 @@ class Ventana():
 		self.lblPrueba = Tk.Label( master = root, text = "" )
 		self.lblPrueba.grid( row = 10, column = 1, rowspan = 2 )
 
+		self.btnPlotear = Tk.Button(master =  root, text="Plotear", command = self.plotAreas )
+		self.btnPlotear.grid( row = 11)
+
 		root.protocol('WM_DELETE_WINDOW', self._quit)
 		
 		self.w = []
@@ -125,34 +136,19 @@ class Ventana():
 		errorTotal = errorMax + 1
 		llegoLimEpocas = False
 		iteracion = 0
+
+		
+		
+
 		while (errorTotal > errorMax):
 			errorTotal = 0
 			for vector in self.grafica.vectoresEntrenamiento:
 				
-				##feedforward
-				
-				##convierte el vector de entrenamiento en un np.array para su manejo en las operaciones
-				##a_i sirve para guardar los valores de f(n_i), empezando por el vector de entrada
-				#a_i = []
-				#a_i.append(np.array([[X0], [vector.getCoordenadas()[0]], [vector.getCoordenadas()[1]]]))
-				##por cada capa oculta se genera la salida calculando la funcion logsig de la matriz de la capa i por la entrada a_i
-				##a_i se actualiza cada vuelta
-				#for i in range(capasOcultas.get()):
-				#	ai = self.w[i]*a_i[i]
-				#	#se agrega el X0 = -1 despues de salir de la capa
-				#	ai = np.append([X0], vE.logsig_array(ai))
-				#	#se reacomoda el array en forma de columna para poder hacer operaciones
-				#	ai = ai.reshape((len(ai), 1))
-				#	a_i.append(ai)
-				
-				##se calcula la salida a_i de la capa de salida
-				#a_m = vE.logsig_array(self.w[capasOcultas.get()]*a_i[capasOcultas.get()])
-				#salida = a_m[0]
 				salida,a_i = self.feedForward(vector)
 							
 				error = vector.getClase() - salida
-				errorTotal += (pow(error, 2)/2)
-				
+				errorTotal += (pow(error, 2)/2)				
+
 				#backprop
 				
 				#calculo de sensibilidades
@@ -187,8 +183,10 @@ class Ventana():
 			self.lblEstado.config(text="Error total: "+str(errorTotal) + ' Epoca: ' + str(iteracion) )
 			print("Error total: "+str(errorTotal) + ' Epoca: ' + str(iteracion))
 			
+			self.plotError(iteracion, errorTotal)
+
 			if iteracion % 5 == 0:	
-				self.fig.canvas.draw()
+				self.grafica.canvas.draw()
 
 			#Muestra los pesos
 			#textoPesos = 'Pesos: W0 = ' + str( round( W0.getValor(), MAX_DECIMALES ) ) + '\t'
@@ -264,7 +262,41 @@ class Ventana():
 
 		self.grafica.estaProbando = True
 
+	def plotAreas(self):
+		numSteps = 70
+		step = round( ( abs(MIN_PLOT) + abs(MAX_PLOT) ) / numSteps, MAX_DECIMALES )
+		rango = range( numSteps )
+		sumaX = MIN_PLOT
+		sumaY = MIN_PLOT
+		
+
+		vector_areas = []
+
+		for i in rango:
+			sumaX += step
+			sumaY = -5
+			for j in rango:
+				sumaY += step
+				prueba = vE.VectorEntrenamiento( ( sumaX , sumaY ), 2 )
+
+				print('Graficar',sumaX,sumaY)
+
+				salida,a_i = self.feedForward( prueba )
+
+				if salida >= 0.5:
+					self.grafica.plotMapeo( prueba.getCoordenadas()[0], prueba.getCoordenadas()[1], 'or' )
+				else:
+					self.grafica.plotMapeo( prueba.getCoordenadas()[0], prueba.getCoordenadas()[1], 'ob' )
+
+		self.fig.canvas.draw()
+
+	def plotError(self, epoca, error):
+		pass
+		#self.ax2.plot(epoca,error, 'og')
+		#self.fig2.draw()
+		#self.ax2.draw()
+		#help(self.ax2.draw)
+
 	def crearMuestrasGrafica(self):
 		aux = [ i for i in range(100) ]
 		res = []
-		

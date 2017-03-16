@@ -45,3 +45,6 @@ class Grafica(object):
 	def plotPrueba(self, x, y, color):
 		self.ax.plot( x, y, color)
 		self.figure.canvas.draw()
+
+	def plotMapeo(self, x, y, color):
+		self.ax.plot( x, y, color)

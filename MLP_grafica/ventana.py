@@ -97,8 +97,12 @@ class Ventana():
 		self.lblPrueba = Tk.Label( master = root, text = "" )
 		self.lblPrueba.grid( row = 10, column = 1, rowspan = 2 )
 
+
 		self.btnPlotear = Tk.Button(master =  root, text="Plotear", command = self.plotAreas )
-		self.btnPlotear.grid( row = 11)
+		self.btnPlotear.grid( row = 11 )
+
+		self.btnPlotear2 = Tk.Button(master =  root, text="Contour", command = self.plotContour )
+		self.btnPlotear2.grid( row = 11, column = 1)
 
 		root.protocol('WM_DELETE_WINDOW', self._quit)
 		
@@ -278,6 +282,7 @@ class Ventana():
 		sumaX = MIN_PLOT
 		sumaY = MIN_PLOT
 		
+		X , Y, Z = [], [], []
 
 		vector_areas = []
 
@@ -292,10 +297,40 @@ class Ventana():
 
 				salida,a_i = self.feedForward( prueba )
 
+				X.append( sumaX )
+				Y.append( sumaY )
+				Z.append( salida )
+
 				if salida >= 0.5:
-					self.grafica.plotMapeo( prueba.getCoordenadas()[0], prueba.getCoordenadas()[1], 'or' )
+					self.grafica.plotMapeo( prueba.getCoordenadas()[0], prueba.getCoordenadas()[1], '.r' )
 				else:
-					self.grafica.plotMapeo( prueba.getCoordenadas()[0], prueba.getCoordenadas()[1], 'ob' )
+					self.grafica.plotMapeo( prueba.getCoordenadas()[0], prueba.getCoordenadas()[1], '.b' )
+
+		self.fig.canvas.draw()
+
+	def plotContour(self):
+		numSteps = 70
+		step = round( ( abs(MIN_PLOT) + abs(MAX_PLOT) ) / numSteps, MAX_DECIMALES )
+		
+		x = y = np.arange( MIN_PLOT, MAX_PLOT, step )
+		Z = np.zeros( ( len(x), len(y) ) )
+		
+		X, Y = np.meshgrid( x, y )
+		
+		for i in range(numSteps):
+			aux = []
+			for j in range( numSteps ):
+				prueba = vE.VectorEntrenamiento( ( x[ i ] , y[ j ] ), 2 )
+				#salida,a_i = self.feedForward( prueba )
+				salida,a_i = self.feedForward( prueba )
+
+				Z[ i, j ] = salida
+				
+				#aux.append( salida )
+
+			#Z.append( aux )
+		CS = self.grafica.ax.contour( X, Y, Z)
+		plt.clabel(CS, inline=1, fontsize=10)
 
 		self.fig.canvas.draw()
 

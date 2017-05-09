@@ -112,7 +112,6 @@ class RBF(object):
 					detectoCambios = True
 					print('Sigue')
 
-
 				rbf.reset()
 			epocas += 1
 			print('Epoca')

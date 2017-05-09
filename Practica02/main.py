@@ -1,4 +1,4 @@
-import tkinter as Tk
+import Tkinter as Tk
 import ventana
 
 def main():

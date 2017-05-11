@@ -1,11 +1,20 @@
 #RBF
 
 import math
-import random
-import vectorEntrenamiento as vE
+import matplotlib
+matplotlib.use('TkAgg')
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
 import numpy as np
+import random
+import tkinter as Tk
+from grafica import Grafica
+import vectorEntrenamiento as vE
 
 MAX_INT = 100000
+
+root = Tk.Tk()
+root.wm_title("Adaline")
 
 class Cluster(object):
 	"""docstring for Cluster"""
@@ -55,20 +64,35 @@ class Cluster(object):
 
 class RBF(object):
 	"""docstring for RBF"""
-	def __init__(self, trainingSet):
-		super(RBF, self).__init__()
-		self.trainingSet = trainingSet
-		self.dimensiones = len( trainingSet[0].getCoordenadas() )
+	def __init__(self):
+		self.fig = plt.figure()
+		canvas = FigureCanvasTkAgg( self.fig, master = root )
+		#canvas2 =  FigureCanvasTkAgg( self.fig, master = root )
+		self.grafica = Grafica( self.fig )
+		self.grafica.setCanvas( canvas )
+		self.ax = self.grafica.ax
+		canvas.show()
+		canvas.get_tk_widget().grid( row = 0, column = 0, columnspan = 3 )
+		canvas._tkcanvas.grid( row=1, column = 0 )
+
+		self.trainingSet = self.grafica.vectoresEntrenamiento
+		self.centroides = self.grafica.vectoresPrueba
+
+		self.btnEntrenar = Tk.Button(master=root, text="Entrenar", command = self.Entrenar)
+		self.btnEntrenar.grid( row = 6, column = 1)
+
+	def Entrenar(self):
+		self.dimensiones = len( self.trainingSet[0].getCoordenadas() )
 		print("Dimensiones: ", self.dimensiones)
 		self.setRBF = []
-		self.numRbf = int ( 2 * len( trainingSet ) / 3 )
+		self.numRbf = int ( 2 * len( self.trainingSet ) / 3 )
 
 		#for i in range( self.dimensiones ):
 		for i in range(  self.numRbf ):
 			self.setRBF.append( Cluster( self.dimensiones ) )
 			print('a')
 
-		for index,vector in enumerate ( random.sample( trainingSet, self.numRbf ) ):
+		for index,vector in enumerate ( random.sample( self.trainingSet, self.numRbf ) ):
 			self.setRBF[ index ].centro = vector.getCoordenadas()
 			print('b')
 
@@ -82,37 +106,49 @@ class RBF(object):
 
 		while detectoCambios:
 
-			detectoCambios = False		
+			detectoCambios = False	
 
-			for vector in self.trainingSet:
-				rbfGanador = self.setRBF[0]
-				distanciaMin = MAX_INT
+			for centros in self.centroides:	
+
+				print(centros.getCoordenadas)
+				for vector in self.trainingSet:
+					rbfGanador = centros
+					distanciaMin = MAX_INT
+					distanciaMax = 0
+
+					for rbf in self.setRBF:
+						#print( 'Distancia: ' , rbf.centro , ' --> ' ,vector.getCoordenadas() )
+						distancia = rbf.calcularDistancia( vector.getCoordenadas() )
+						#print( distancia )
+						if distancia > distanciaMax:
+							distanciaMax = distancia
+
+						if distancia < distanciaMin:
+							rbfGanador = rbf
+							distanciaMin = distancia
+
+					rbfGanador.setCluster.append( vector )
+					#print('Algo')
+
 
 				for rbf in self.setRBF:
-					#print( 'Distancia: ' , rbf.centro , ' --> ' ,vector.getCoordenadas() )
-					distancia = rbf.calcularDistancia( vector.getCoordenadas() )
-					#print( distancia )
-					if distancia < distanciaMin:
-						rbfGanador = rbf
-						distanciaMin = distancia
+					nuevoCentro = rbf.getPromedio()
 
-				rbfGanador.setCluster.append( vector )
-				#print('Algo')
+					print( rbf.centro )
+					print( nuevoCentro )
+					print()
 
+					if nuevoCentro != rbf.centro:
+						rbf.centro = nuevoCentro
+						detectoCambios = True
+						print('Sigue')
 
-			for rbf in self.setRBF:
-				nuevoCentro = rbf.getPromedio()
+					rbf.reset()
 
-				print( rbf.centro )
-				print( nuevoCentro )
-				print()
+				self.grafica.plotPrueba(rbf.centro[0], rbf.centro[1], 'og', distanciaMax * 15)
 
-				if nuevoCentro != rbf.centro:
-					rbf.centro = nuevoCentro
-					detectoCambios = True
-					print('Sigue')
+			#self.grafica.plotPrueba(rbf.centro[0], rbf.centro[1], 'ow')
 
-				rbf.reset()
 			epocas += 1
 			print('Epoca')
 
@@ -120,37 +156,11 @@ class RBF(object):
 			pass
 			#rbf.setRadio()
 
+		
+
 		print( 'Epocas: ', epocas )
 
 
 def gaussiana( x, c , r ):
 	math.exp( - ( ( x - c ) ** 2 / ( r ** 2 ) ) )
-
-
-#Resultado de la gaussiana es -->	0(rj)
-#Wkj --> random
-#Omega --> 1
-
-#Incremento de los pesos --> lr( deseada - zk ) gaussiana( rj )
-
-def gaussian(beta, x, centro):
-	x_array = np.array([value for value in x])
-	centro_array = np.array([value for value in centro])
-	return np.exp((-1*beta)*(np.linalg.norm(x_array - centro_array)**2))
-
-if __name__ == '__main__':
-	trainingSet = []
-	
-	trainingSet.append( vE.VectorEntrenamiento([0,3],0) )
-	trainingSet.append( vE.VectorEntrenamiento([1,2],0) )
-	trainingSet.append( vE.VectorEntrenamiento([3,3],0) )
-	trainingSet.append( vE.VectorEntrenamiento([0,4],0) )
-	trainingSet.append( vE.VectorEntrenamiento([1,5],0) )
-	trainingSet.append( vE.VectorEntrenamiento([3,6],0) )
-
-
-	trainingSet.append( vE.VectorEntrenamiento([2,3],1) )
-	trainingSet.append( vE.VectorEntrenamiento([-2,2],1) )
-	trainingSet.append( vE.VectorEntrenamiento([-3,3],1) )
-
-	rbf = RBF( trainingSet )
+		

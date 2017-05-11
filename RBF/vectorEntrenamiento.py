@@ -2,6 +2,7 @@ import random as rnd
 import math
 import numpy as np
 
+
 class VectorEntrenamiento():
 	def __init__(self, coordenadas, clase):
 		self.coordenadas = coordenadas

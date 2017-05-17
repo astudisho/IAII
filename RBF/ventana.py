@@ -30,6 +30,7 @@ X0 = -1
 
 maxEpocas = Tk.StringVar()
 maxEpocas.set('500')
+
 lr = Tk.StringVar()
 lr.set('0.1')
 maxError = Tk.StringVar()
@@ -80,3 +81,4 @@ class Ventana():
 		# self.grafica.setAx()
 		# self.fig.canvas.draw()
 		self.grafica.clear()
+

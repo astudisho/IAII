@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
 import numpy as np
 import random
-import Tkinter as Tk
+import tkinter as Tk
 from grafica import Grafica
 import vectorEntrenamiento as vE
 
@@ -18,18 +18,15 @@ root.wm_title("Adaline")
 
 class Cluster(object):
 	"""docstring for Cluster"""
-	def __init__(self, dimensiones, coordenadas):
+	def __init__(self, dimensiones):
 		super(Cluster, self).__init__()
 		self.dimensiones = dimensiones
 
-		#self.centro = [-1 ] * dimensiones
-		self.centro = coordenadas
+		self.centro = [-1 ] * dimensiones
 		self.radio = -1
 		self.setCluster = []
 		self.sigma = 0
 		self.beta = 0
-
-	def getCentro(self): return self.centro
 
 	def calcularDistancia(self, entrada):
 		sumatoria = 0
@@ -47,64 +44,57 @@ class Cluster(object):
 			suma = 0
 			for cluster in self.setCluster:
 				suma += cluster.getCoordenadas()[i]
-
-			if(len(self.setCluster)) == 0: pass
-			else: resultado[i] = suma / float( len( self.setCluster ) )
+			resultado[i] = suma / float( len( self.setCluster ) )
 
 		return resultado
 
 	def setRadio(self):
-		# PROMEDIO
-		# suma = 0
-		# for cluster in self.setCluster:
-		# 	suma += self.calcularDistancia( cluster.getCoordenadas() )
-        #
-		# if len( self.setCluster ) > 0 :
-		# 	self.radio = suma / len( self.setCluster )
-        #
-		# else:
-		# 	self.radio = 0.1
-
-		#MAS LEJANO
-		aux = [ 0.1 ]
+		suma = 0
 		for cluster in self.setCluster:
-		 	aux.append( self.calcularDistancia( cluster.getCoordenadas() ) )
+			suma += self.calcularDistancia( cluster.getCoordenadas() )
 
-		self.radio = max(aux)
-        #
-		# if len( self.setCluster ) > 0 :
-		# 	self.radio = suma / len( self.setCluster )
-        #
-		# else:
-		# 	self.radio = 0.1
+		self.radio = suma / len( self.setCluster )
 
-		#self.sigma = self.calcularDistancia( masLejano.getCoordenadas() )
+		self.sigma = self.radio
 
-		# self.beta = 1 / ( 2 * self.sigma ** 2 )
+		self.beta = 1 / ( 2 * self.sigma ** 2 )
 
 		return self.radio
 
 
 class RBF(object):
 	"""docstring for RBF"""
-	def __init__(self, trainingSet, grafica,  clusterSet = None):
-		super(RBF, self).__init__()
-		self.trainingSet = trainingSet
-		self.dimensiones = len( trainingSet[0].getCoordenadas() )
+	def __init__(self):
+		self.fig = plt.figure()
+		canvas = FigureCanvasTkAgg( self.fig, master = root )
+		#canvas2 =  FigureCanvasTkAgg( self.fig, master = root )
+		self.grafica = Grafica( self.fig )
+		self.grafica.setCanvas( canvas )
+		self.ax = self.grafica.ax
+		canvas.show()
+		canvas.get_tk_widget().grid( row = 0, column = 0, columnspan = 3 )
+		canvas._tkcanvas.grid( row=1, column = 0 )
 
+		self.trainingSet = self.grafica.vectoresEntrenamiento
+		self.centroides = self.grafica.vectoresPrueba
+
+		self.btnEntrenar = Tk.Button(master=root, text="Entrenar", command = self.Entrenar)
+		self.btnEntrenar.grid( row = 6, column = 1)
+
+	def Entrenar(self):
+		self.dimensiones = len( self.trainingSet[0].getCoordenadas() )
 		print("Dimensiones: ", self.dimensiones)
-		self.setRBF = clusterSet
+		self.setRBF = []
+		self.numRbf = int ( 2 * len( self.trainingSet ) / 3 )
 
+		#for i in range( self.dimensiones ):
+		for i in range(  self.numRbf ):
+			self.setRBF.append( Cluster( self.dimensiones ) )
+			print('a')
 
-		self.grafica = grafica
-		#self.numRbf = int ( 2 * len( trainingSet ) / 3 )
-
-		# #for i in range( self.dimensiones ):
-		# for i in range(  self.numRbf ):
-		# 	self.setRBF.append( Cluster( self.dimensiones ) )
-
-		# for index,vector in enumerate ( random.sample( trainingSet, self.numRbf ) ):
-		# 	self.setRBF[ index ].centro = vector.getCoordenadas()
+		for index,vector in enumerate ( random.sample( self.trainingSet, self.numRbf ) ):
+			self.setRBF[ index ].centro = vector.getCoordenadas()
+			print('b')
 
 		print( self.setRBF[0].centro )
 
@@ -157,28 +147,14 @@ class RBF(object):
 
 				self.grafica.plotPrueba(rbf.centro[0], rbf.centro[1], 'og', distanciaMax * 15)
 
-				if nuevoCentro != rbf.centro:
-					rbf.centro = nuevoCentro
-					detectoCambios = True
-					rbf.setRadio()
-					print('Sigue')
-
+			#self.grafica.plotPrueba(rbf.centro[0], rbf.centro[1], 'ow')
 
 			epocas += 1
 			print('Epoca')
 
-		self.grafica.clear()
-
 		for rbf in self.setRBF:
-			print('Ploteando')
-			self.grafica.plotCircle( rbf.getCentro(), rbf.radio )
-			self.grafica.plotMapeo( rbf.getCentro()[0], rbf.getCentro()[1], 'xr' )
-
-		for v in self.trainingSet:
-			self.grafica.plotMapeo( v.getCoordenadas()[0], v.getCoordenadas()[1], 'og' )
-
-		self.grafica.canvas.draw()
-
+			pass
+			#rbf.setRadio()
 
 		
 
@@ -187,15 +163,4 @@ class RBF(object):
 
 def gaussiana( x, c , r ):
 	math.exp( - ( ( x - c ) ** 2 / ( r ** 2 ) ) )
-
-
-#Resultado de la gaussiana es -->	0(rj)
-#Wkj --> random
-#Omega --> 1
-
-#Incremento de los pesos --> lr( deseada - zk ) gaussiana( rj )
-
-def gaussian(beta, x, centro):
-	x_array = np.array([value for value in x])
-	centro_array = np.array([value for value in centro])
-	return np.exp((-1*beta)*(np.linalg.norm(x_array - centro_array)**2))
+		

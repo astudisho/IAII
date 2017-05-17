@@ -1,4 +1,4 @@
-import tkinter as Tk
+import Tkinter as Tk
 import rbf
 
 def main():

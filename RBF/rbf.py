@@ -9,15 +9,18 @@ MAX_INT = 100000
 
 class Cluster(object):
 	"""docstring for Cluster"""
-	def __init__(self, dimensiones):
+	def __init__(self, dimensiones, coordenadas):
 		super(Cluster, self).__init__()
 		self.dimensiones = dimensiones
 
-		self.centro = [-1 ] * dimensiones
+		#self.centro = [-1 ] * dimensiones
+		self.centro = coordenadas
 		self.radio = -1
 		self.setCluster = []
 		self.sigma = 0
 		self.beta = 0
+
+	def getCentro(self): return self.centro
 
 	def calcularDistancia(self, entrada):
 		sumatoria = 0
@@ -35,42 +38,63 @@ class Cluster(object):
 			suma = 0
 			for cluster in self.setCluster:
 				suma += cluster.getCoordenadas()[i]
-			resultado[i] = suma / float( len( self.setCluster ) )
+
+			if(len(self.setCluster)) == 0: pass
+			else: resultado[i] = suma / float( len( self.setCluster ) )
 
 		return resultado
 
 	def setRadio(self):
-		suma = 0
+		# PROMEDIO
+		# suma = 0
+		# for cluster in self.setCluster:
+		# 	suma += self.calcularDistancia( cluster.getCoordenadas() )
+        #
+		# if len( self.setCluster ) > 0 :
+		# 	self.radio = suma / len( self.setCluster )
+        #
+		# else:
+		# 	self.radio = 0.1
+
+		#MAS LEJANO
+		aux = [ 0.1 ]
 		for cluster in self.setCluster:
-			suma += self.calcularDistancia( cluster.getCoordenadas() )
+		 	aux.append( self.calcularDistancia( cluster.getCoordenadas() ) )
 
-		self.radio = suma / len( self.setCluster )
+		self.radio = max(aux)
+        #
+		# if len( self.setCluster ) > 0 :
+		# 	self.radio = suma / len( self.setCluster )
+        #
+		# else:
+		# 	self.radio = 0.1
 
-		self.sigma = self.radio
+		#self.sigma = self.calcularDistancia( masLejano.getCoordenadas() )
 
-		self.beta = 1 / ( 2 * self.sigma ** 2 )
+		# self.beta = 1 / ( 2 * self.sigma ** 2 )
 
 		return self.radio
 
 
 class RBF(object):
 	"""docstring for RBF"""
-	def __init__(self, trainingSet):
+	def __init__(self, trainingSet, grafica,  clusterSet = None):
 		super(RBF, self).__init__()
 		self.trainingSet = trainingSet
 		self.dimensiones = len( trainingSet[0].getCoordenadas() )
+
 		print("Dimensiones: ", self.dimensiones)
-		self.setRBF = []
-		self.numRbf = int ( 2 * len( trainingSet ) / 3 )
+		self.setRBF = clusterSet
 
-		#for i in range( self.dimensiones ):
-		for i in range(  self.numRbf ):
-			self.setRBF.append( Cluster( self.dimensiones ) )
-			print('a')
+		self.grafica = grafica
+		#self.numRbf = int ( 2 * len( trainingSet ) / 3 )
 
-		for index,vector in enumerate ( random.sample( trainingSet, self.numRbf ) ):
-			self.setRBF[ index ].centro = vector.getCoordenadas()
-			print('b')
+		# #for i in range( self.dimensiones ):
+		# for i in range(  self.numRbf ):
+		# 	self.setRBF.append( Cluster( self.dimensiones ) )
+
+		# for index,vector in enumerate ( random.sample( trainingSet, self.numRbf ) ):
+		# 	self.setRBF[ index ].centro = vector.getCoordenadas()
 
 		print( self.setRBF[0].centro )
 
@@ -110,15 +134,25 @@ class RBF(object):
 				if nuevoCentro != rbf.centro:
 					rbf.centro = nuevoCentro
 					detectoCambios = True
+					rbf.setRadio()
 					print('Sigue')
 
 				rbf.reset()
 			epocas += 1
 			print('Epoca')
 
+		self.grafica.clear()
+
 		for rbf in self.setRBF:
-			pass
-			#rbf.setRadio()
+			print('Ploteando')
+			self.grafica.plotCircle( rbf.getCentro(), rbf.radio )
+			self.grafica.plotMapeo( rbf.getCentro()[0], rbf.getCentro()[1], 'xr' )
+
+		for v in self.trainingSet:
+			self.grafica.plotMapeo( v.getCoordenadas()[0], v.getCoordenadas()[1], 'og' )
+
+		self.grafica.canvas.draw()
+
 
 		print( 'Epocas: ', epocas )
 
@@ -137,20 +171,3 @@ def gaussian(beta, x, centro):
 	x_array = np.array([value for value in x])
 	centro_array = np.array([value for value in centro])
 	return np.exp((-1*beta)*(np.linalg.norm(x_array - centro_array)**2))
-
-if __name__ == '__main__':
-	trainingSet = []
-	
-	trainingSet.append( vE.VectorEntrenamiento([0,3],0) )
-	trainingSet.append( vE.VectorEntrenamiento([1,2],0) )
-	trainingSet.append( vE.VectorEntrenamiento([3,3],0) )
-	trainingSet.append( vE.VectorEntrenamiento([0,4],0) )
-	trainingSet.append( vE.VectorEntrenamiento([1,5],0) )
-	trainingSet.append( vE.VectorEntrenamiento([3,6],0) )
-
-
-	trainingSet.append( vE.VectorEntrenamiento([2,3],1) )
-	trainingSet.append( vE.VectorEntrenamiento([-2,2],1) )
-	trainingSet.append( vE.VectorEntrenamiento([-3,3],1) )
-
-	rbf = RBF( trainingSet )

@@ -10,8 +10,8 @@ class Grafica(object):
 		self.vectoresEntrenamiento = []
 		self.vectorCluster = []
 		self.figure = figure
-		self.ax = self.figure.add_subplot(111)
-		self.setAx()	
+		self.ax = self.figure.add_subplot(111, aspect='equal')
+		self.setAx()
 		self.ax.plot()
 		self.canvas = None
 		

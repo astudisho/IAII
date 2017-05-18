@@ -57,7 +57,7 @@ class Cluster(object):
 		# 	self.radio = 0.1
 
 		#MAS LEJANO
-		aux = [ 0.1 ]
+		aux = [ 0.25 ]
 		for cluster in self.setCluster:
 		 	aux.append( self.calcularDistancia( cluster.getCoordenadas() ) )
 
